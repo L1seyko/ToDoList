@@ -2,10 +2,12 @@ package com.hfad.todolist.todo
 
 import android.content.DialogInterface
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
+
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+
 import com.hfad.todolist.R
 import com.hfad.todolist.data.local.TodoListDatabase
 import com.hfad.todolist.data.local.models.Todo

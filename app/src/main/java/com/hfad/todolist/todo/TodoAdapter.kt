@@ -1,11 +1,12 @@
 package com.hfad.todolist.todo
 
-import android.support.v7.widget.RecyclerView
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.hfad.todolist.R
 import com.hfad.todolist.data.local.models.Todo
 import java.util.ArrayList
