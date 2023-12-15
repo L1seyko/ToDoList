@@ -55,5 +55,6 @@ dependencies {
     implementation("android.arch.persistence.room:runtime:1.1.0")
     kapt("android.arch.persistence.room:compiler:1.1.0")
     implementation("com.androidx.support:design:28.0.0")
+    implementation("com.android.support:design:23.1.1")
 
 }
