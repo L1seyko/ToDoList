@@ -1,58 +1,63 @@
 package com.hfad.todolist.todo
 
-
+import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.hfad.todolist.R
-import com.hfad.todolist.data.local.models.Todo
+import com.hfad.todolist.data.local.Todo
 import java.util.ArrayList
 
-class TodoAdapter(var todoList: List<Todo>? = ArrayList<Todo>()): RecyclerView.Adapter<TodoAdapter.TodoViewHolder>(){
+class TodoAdapter(private val context: Context, val listener: TodoClickListener):
+    RecyclerView.Adapter<TodoAdapter.TodoViewHolder>(){
 
-    private var onTodoItemClickedListener: OnTodoItemClickedListener?= null
+    private val todoList = ArrayList<Todo>()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoAdapter.TodoViewHolder {
+        return TodoViewHolder(
+            LayoutInflater.from(context).inflate(R.layout.list_item, parent, false)
+        )
+    }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoViewHolder {
-        val layout = if (itemCount == 0) R.layout.empty_view else R.layout.todo_item_view
-        val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
-        return TodoViewHolder(view, todoList!!)
+    override fun onBindViewHolder(holder: TodoAdapter.TodoViewHolder, position: Int) {
+        val item = todoList[position]
+        holder.title.text = item.title
+        holder.title.isSelected = true
+        holder.note.text = item.note
+        holder.date.text = item.date
+        holder.date.isSelected = true
+        when(item.priority){
+            1 -> holder.todo_layout.setBackgroundColor(Color.parseColor("#FF0000"))
+            2 -> holder.todo_layout.setBackgroundColor(Color.parseColor("#FFA500"))
+            else -> holder.todo_layout.setBackgroundColor(Color.parseColor("#008000"))
+        }
+
+        holder.todo_layout.setOnClickListener {
+            listener.onItemClicked(todoList[holder.adapterPosition])
+        }
     }
 
     override fun getItemCount(): Int {
-        return if(todoList!!.isEmpty()) 0 else todoList!!.size
+        return todoList.size
     }
 
-    override fun onBindViewHolder(holder: TodoViewHolder, position: Int){
-        holder.view.setOnClickListener{onTodoItemClickedListener!!.onTodoItemClicked(todoList!!.get(position))}
-        holder.view.setOnLongClickListener{
-            onTodoItemClickedListener!!.onTodoItemLongClicked(todoList!!.get(position))
-            true
-        }
-        holder.onBindViews(position)
+    fun updateList(newList: List<Todo>){
+        todoList.clear()
+        todoList.addAll(newList)
+        notifyDataSetChanged()
     }
 
-    inner class TodoViewHolder(val view: View, val todoList: List<Todo>): RecyclerView.ViewHolder(view){
-        fun onBindViews(position: Int){
-            if (itemCount != 0){
-                view.findViewById<TextView>(R.id.title).text = todoList.get(position).title
-                view.findViewById<TextView>(R.id.first_letter).text = todoList.get(position).title.first().toUpperCase().toString()
-                view.findViewById<ImageView>(R.id.priority_imgView).setImageResource(getImage(todoList.get(position).priority))
-            }
-
-        }
-        private fun getImage(priority: Int): Int
-        = if (priority == 1) R.drawable.low_priority else if(priority == 2) R.drawable.medium_priority else R.drawable.high_priority
+    inner class TodoViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+        val todo_layout = itemView.findViewById<CardView>(R.id.card_layout)
+        val title = itemView.findViewById<TextView>(R.id.tv_title)
+        val note = itemView.findViewById<TextView>(R.id.tv_note)
+        val date = itemView.findViewById<TextView>(R.id.tv_date)
     }
 
-    fun setTodoItemClickedListener(onTodoItemClickedListener: OnTodoItemClickedListener){
-        this.onTodoItemClickedListener = onTodoItemClickedListener
-    }
-
-    interface OnTodoItemClickedListener{
-        fun onTodoItemClicked(todo: Todo)
-        fun onTodoItemLongClicked(todo: Todo)
+    interface TodoClickListener {
+        fun onItemClicked(todo: Todo)
     }
 }
