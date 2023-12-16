@@ -39,7 +39,6 @@ class TodoAdapter(private val context: Context, val listener: TodoClickListener)
             listener.onItemClicked(todoList[holder.adapterPosition])
         }
     }
-
     override fun getItemCount(): Int {
         return todoList.size
     }
